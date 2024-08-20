@@ -1,0 +1,103 @@
+-- Create table
+create table ODS_MD_TABELA
+(
+  ID_TABELA   NUMBER not null,
+  NOME_TABELA VARCHAR2(30) not null,
+  DESCRICAO   VARCHAR2(100)
+);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ODS_MD_TABELA
+  add constraint ODS_MD_TABELA_PK primary key (ID_TABELA)
+  using index;
+-- Create sequence 
+create sequence SEQ_ODS_MD_TABELA
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+nocache;
+  
+-- Create table
+create table ODS_MD_TABELA_COLUNA
+(
+  ID_TABELA_COLUNA          NUMBER not null,
+  ID_TABELA                 NUMBER not null,
+  NOME_COLUNA               VARCHAR2(30) not null,
+  DIMENSAO                  VARCHAR2(1) default 'N',
+  TIPO_ATUALIZACAO_DIMENSAO VARCHAR2(1)
+);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ODS_MD_TABELA_COLUNA
+  add constraint ODS_MD_TABELA_COLUNA_PK primary key (ID_TABELA_COLUNA)
+  using index; 
+alter table ODS_MD_TABELA_COLUNA
+  add constraint ODS_MD_TC_TABELA_FK foreign key (ID_TABELA)
+  references ODS_MD_TABELA (ID_TABELA) on delete cascade;
+-- Create/Recreate check constraints 
+alter table ODS_MD_TABELA_COLUNA
+  add constraint ODS_MD_TC_CHK1
+  check (TIPO_ATUALIZACAO_DIMENSAO IN ('1', '2'));  
+-- Create sequence 
+create sequence SEQ_ODS_MD_TABELA_COLUNA
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+nocache;
+
+-- Create table
+create table ODS_ETL_PROCESSO
+(
+  ID_PROCESSO       NUMBER not null,
+  NOME              VARCHAR2(30) not null,
+  DESCRICAO         VARCHAR2(100),
+  INTERVALO_MINUTOS NUMBER default 0,
+  NOME_ROTINA       VARCHAR2(30),
+  EXECUTANDO        VARCHAR2(1) default 'N',
+  DAT_ULT_EXECUCAO  DATE,
+  QTD_FALHAS        NUMBER
+);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ODS_ETL_PROCESSO
+  add constraint ODS_ETL_PROCESSO_PK primary key (ID_PROCESSO)
+  using index;
+-- Create/Recreate check constraints 
+alter table ODS_ETL_PROCESSO
+  add constraint ODS_ETL_PROCESSO_CHK1
+  check (EXECUTANDO IN ('S', 'N'));
+-- Create sequence 
+create sequence SEQ_ODS_ETL_PROCESSO
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+nocache;
+
+-- Create table
+create table ODS_ETL_PROCESSO_EXECUCAO
+(
+  ID_PROCESSO_EXECUCAO    NUMBER not null,
+  ID_PROCESSO             NUMBER not null,
+  DAT_INICIO              DATE not null,
+  DAT_TERMINO             DATE,
+  LOG                     VARCHAR2(4000),
+  QTD_REGISTROS           NUMBER,
+  QTD_REGISTROS_ERRO      NUMBER
+);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ODS_ETL_PROCESSO_EXECUCAO
+  add constraint ODS_ETL_PROCESSO_EXECUCAO_PK primary key (ID_PROCESSO_EXECUCAO)
+  using index;
+alter table ODS_ETL_PROCESSO_EXECUCAO
+  add constraint ODS_ETL_PL_PROCESSO_FK foreign key (ID_PROCESSO)
+  references ODS_ETL_PROCESSO (ID_PROCESSO) on delete cascade;
+-- Create sequence 
+create sequence SEQ_ODS_ETL_PROCESSO_EXECUCAO
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+nocache;
+
+
+  

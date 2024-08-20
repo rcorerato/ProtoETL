@@ -1,0 +1,21 @@
+declare
+
+  v_id_processo_carga      integer;
+  v_id_log_carga           integer;  
+  v_s_mensagem             ods_etl_log_carga.mensagem%type;
+  v_n_qtd_registros        ods_etl_log_carga.qtd_registros%type;
+  v_n_qtd_registros_erro   ods_etl_log_carga.qtd_registros_erro%type;
+
+begin
+
+  v_id_processo_carga := 1;
+
+  pkg_ods_etl.inicio_processo(v_id_processo_carga, v_id_log_carga);
+  
+  nome_rotina(v_s_mensagem, v_n_qtd_registros, v_n_qtd_registros_erro);
+  
+  pkg_ods_etl.termino_processo(v_id_processo_carga, v_id_log_carga, v_s_mensagem, v_n_qtd_registros, v_n_qtd_registros_erro);
+
+  commit;
+  
+end;
